@@ -1,10 +1,17 @@
 from fastapi import FastAPI, Depends
 from fastapi_users import FastAPIUsers
 
-from auth.auth import auth_backend
-from auth.database import User
-from auth.manager import get_user_manager
-from auth.schemas import UserRead, UserCreate
+from src.auth.base_config import auth_backend
+from src.auth.manager import get_user_manager
+from src.auth.schemas import UserRead, UserCreate
+from src.auth.models import User
+
+from src.operations.router import router as router_operation
+import sys
+import os
+
+sys.path.append(os.path.join(sys.path[0], 'src'))
+
 
 app = FastAPI(
     title="Trading App"
@@ -27,14 +34,5 @@ app.include_router(
     tags=["auth"],
 )
 
-current_user = fastapi_users.current_user()
+app.include_router(router_operation)
 
-
-@app.get("/protected-route")
-def protected_route(user: User = Depends(current_user)):
-    return f"Hello, {user.username}"
-
-
-@app.get("/unprotected-route")
-def unprotected_route():
-    return f"Hello, anonym"

@@ -1,6 +1,6 @@
+from src.config import SECRET as SCRT
 from fastapi_users.authentication import CookieTransport, AuthenticationBackend
 from fastapi_users.authentication import JWTStrategy
-from config import SECRET as SCRT
 
 cookie_transport = CookieTransport(cookie_max_age=3600, cookie_name="bonds")
 
