@@ -1,7 +1,6 @@
 from fastapi import FastAPI, Depends
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
-from fastapi_cache.decorator import cache
 from fastapi_users import FastAPIUsers
 from redis import asyncio as aioredis
 
@@ -11,6 +10,7 @@ from src.auth.schemas import UserRead, UserCreate
 from src.auth.models import User
 
 from src.operations.router import router as router_operation
+from src.tasks.router import router as router_task
 import sys
 import os
 
@@ -39,7 +39,7 @@ app.include_router(
 )
 
 app.include_router(router_operation)
-
+app.include_router(router_task)
 
 @app.on_event("startup")
 async def startup():
