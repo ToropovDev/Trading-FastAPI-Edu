@@ -1,6 +1,9 @@
+import time
+
 from fastapi import APIRouter, Depends
 from sqlalchemy import select, insert
 from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi_cache.decorator import cache
 
 from src.database import get_async_session
 from src.operations.models import operation
@@ -13,15 +16,40 @@ router = APIRouter(
 
 
 @router.get("/")
-async def get_specific_operations(operation_type: str, session: AsyncSession = Depends(get_async_session)):
-    query = select(operation).where(operation.c.type == operation_type)
-    result = await session.execute(query)
-    return result.mappings().all()
+async def get_specific_operation(operation_type: str, session: AsyncSession = Depends(get_async_session)):
+    try:
+        query = select(operation).where(operation.c.type == operation_type)
+        result = await session.execute(query)
+        return {
+            "status": "success",
+            "data": result.mappings().all(),
+            "details": None
+        }
+    except Exception:
+        return {
+            "status": "error",
+            "data": None,
+            "details": None
+        }
 
 
 @router.post("/")
-async def add_specific_operations(new_operation: OperationCreate, session: AsyncSession = Depends(get_async_session)):
-    stmt = insert(operation).values(**new_operation.dict())
-    await session.execute(stmt)
-    await session.commit()
-    return {"status": "success"}
+async def add_specific_operation(new_operation: OperationCreate, session: AsyncSession = Depends(get_async_session)):
+    try:
+        stmt = insert(operation).values(**new_operation.dict())
+        await session.execute(stmt)
+        await session.commit()
+        return {"status": "success",
+                "data": None,
+                "details": None}
+    except Exception:
+        return {"status": "error",
+                "data": None,
+                "details": None}
+
+
+@router.get("/long_running")
+@cache(expire=30)
+def get_long_running_operations():
+    time.sleep(2)
+    return "Огромное количество данных, которые долго обрабатываются"

@@ -1,5 +1,9 @@
 from fastapi import FastAPI, Depends
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+from fastapi_cache.decorator import cache
 from fastapi_users import FastAPIUsers
+from redis import asyncio as aioredis
 
 from src.auth.base_config import auth_backend
 from src.auth.manager import get_user_manager
@@ -36,3 +40,8 @@ app.include_router(
 
 app.include_router(router_operation)
 
+
+@app.on_event("startup")
+async def startup():
+    redis = aioredis.from_url("redis://localhost", prefix="fastapi-cache-trading-app")
+    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
