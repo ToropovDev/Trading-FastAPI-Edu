@@ -8,7 +8,7 @@ SMTP_HOST = "smtp.gmail.com"
 SMTP_PORT = 465
 
 '''
-run celery
+run celery:
 
 celery -A src.tasks.tasks:celery_app worker --loglevel=INFO --pool=solo
 celery -A src.tasks.tasks.celery_app flower
@@ -26,10 +26,7 @@ def get_email_template_dashboard(username: str, user_email: str):
 
     email.set_content(
         '<div>'
-        f'<h1 style="color: red;">Здравствуйте, {username}, а вот и ваш отчет. Зацените 😊</h1>'
-        '<img src="https://static.vecteezy.com/system/resources/previews/008/295/031/original/custom-relationship'
-        '-management-dashboard-ui-design-template-suitable-designing-application-for-android-and-ios-clean-style-app'
-        '-mobile-free-vector.jpg" width="600">'
+        f'<h1 style="color: red;">Здравствуйте, {username}, а вот и ваш отчет.</h1>'
         '</div>',
         subtype='html'
     )

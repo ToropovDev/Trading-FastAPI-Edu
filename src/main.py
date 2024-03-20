@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from fastapi_users import FastAPIUsers
@@ -16,7 +16,11 @@ import os
 
 sys.path.append(os.path.join(sys.path[0], 'src'))
 
+'''
+run app:
 
+uvicorn src.main:app --reload
+'''
 app = FastAPI(
     title="Trading App"
 )
@@ -40,6 +44,7 @@ app.include_router(
 
 app.include_router(router_operation)
 app.include_router(router_task)
+
 
 @app.on_event("startup")
 async def startup():
